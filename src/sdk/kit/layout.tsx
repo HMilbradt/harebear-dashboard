@@ -276,9 +276,9 @@ export function Metric({ label, value, unit, delta, lowerIsBetter, align = "cent
           ) : null}
         </span>
       )}
-      <span className="text-2xl font-semibold tracking-tight tabular-nums">
+      <span className="text-xl font-semibold tracking-tight whitespace-nowrap tabular-nums @xs:text-2xl">
         {value}
-        {unit && <span className="ml-1 text-sm font-medium text-muted-foreground">{unit}</span>}
+        {unit && <span className="ml-0.5 text-xs font-medium text-muted-foreground">{unit}</span>}
       </span>
       <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</span>
     </div>
@@ -288,7 +288,7 @@ export function Metric({ label, value, unit, delta, lowerIsBetter, align = "cent
 /** Metrics side by side, evenly spaced. */
 export function MetricGroup({ children }: { children?: React.ReactNode }) {
   return (
-    <div data-slot="metric-group" className="grid auto-cols-fr grid-flow-col gap-3">
+    <div data-slot="metric-group" className="grid auto-cols-fr grid-flow-col gap-2">
       {children}
     </div>
   )
