@@ -8,13 +8,18 @@ const site = z
     url: z.url().describe("Opened on click, and checked unless checkUrl is set"),
     checkUrl: z.url().optional(),
     icon: iconOption.optional(),
+    okStatus: z
+      .array(z.number().int().min(100).max(599))
+      .optional()
+      .describe("Extra HTTP statuses that count as up, e.g. [401] for a service that requires a login"),
   })
   .strict()
 
 export default definePlugin({
   id: "monitor",
   name: "Monitor",
-  description: "Up/down status and response time for a list of sites. Any HTTP status below 400 counts as up.",
+  description:
+    "Up/down status and response time for a list of sites. An HTTP status below 400, or one listed in okStatus, counts as up.",
   options: z.object({
     sites: z.array(site).min(1),
     timeoutMs: z.number().int().min(500).max(30_000).default(5000),
@@ -42,7 +47,7 @@ export default definePlugin({
           })
           const latencyMs = Math.round(performance.now() - started)
           await res.text().catch(() => {})
-          return { ...base, up: res.status < 400, code: res.status, latencyMs }
+          return { ...base, up: res.status < 400 || !!s.okStatus?.includes(res.status), code: res.status, latencyMs }
         } catch (err) {
           return { ...base, up: false, error: (err as Error).message }
         }

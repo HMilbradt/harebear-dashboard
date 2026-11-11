@@ -22,6 +22,7 @@ export type ClientNode =
 
 export interface ShellData {
   title: string
+  header: { title: string; showTitle: boolean; icon: { src: string; mono: boolean } | null; homeInNav: boolean }
   theme: DashboardConfig["theme"]
   search: DashboardConfig["search"]
   pages: { slug: string; title: string }[]
@@ -44,10 +45,22 @@ const PREFETCH_DEADLINE = 1500
 export const getShell = createServerFn({ method: "GET" }).handler(async (): Promise<ShellData> => {
   const { configStore } = await import("./store")
   const { dashboardSchema } = await import("./config")
+  const { resolveIcon } = await import("@/plugins/_shared/icons")
   const s = await configStore().get()
   const dash = s.config?.dashboard ?? dashboardSchema.parse({})
   return {
     title: dash.title,
+    header: {
+      title: dash.header.title ?? dash.title,
+      showTitle: dash.header.showTitle,
+      icon:
+        dash.header.icon === "none"
+          ? null
+          : dash.header.icon === "default"
+            ? { src: "/favicon.svg", mono: false }
+            : (resolveIcon(dash.header.icon) ?? null),
+      homeInNav: dash.header.homeInNav,
+    },
     theme: dash.theme,
     search: dash.search,
     pages: s.config?.pages.map((p) => ({ slug: p.slug, title: p.title })) ?? [],

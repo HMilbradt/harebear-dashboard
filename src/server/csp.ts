@@ -1,4 +1,5 @@
 import "@tanstack/react-start/server-only"
+import { iconHosts } from "@/plugins/_shared/icons"
 import { serverPlugins } from "@/plugins/server"
 import type { LoadedConfig } from "./config"
 
@@ -11,6 +12,9 @@ let cached: { config?: LoadedConfig; header: string } | undefined
 export function cspHeader(config: LoadedConfig | undefined): string {
   if (cached && cached.config === config) return cached.header
   const img = new Set(["'self'", "data:"])
+  const headerIcon = config?.dashboard.header.icon
+  if (headerIcon && headerIcon !== "default" && headerIcon !== "none")
+    for (const h of iconHosts([headerIcon])) img.add(h)
   for (const page of config?.pages ?? []) {
     for (const w of page.widgets.values()) {
       const plugin = serverPlugins.get(w.type)

@@ -34,19 +34,30 @@ export function ConfigErrors() {
 }
 
 function Nav({ active }: { active: string }) {
-  const { pages, title } = useDashboard()
+  const { pages, header } = useDashboard()
+  const home = pages[0]?.slug
+  const tabs = header.homeInNav ? pages : pages.slice(1)
+  const brandOnly = !header.showTitle
   return (
     <header className="mx-auto flex w-full items-center gap-4 px-4 pt-4 sm:px-6">
-      <span className="flex items-center gap-2 font-semibold">
-        <img src="/favicon.svg" alt="" className="size-6" />
-        {title}
-      </span>
+      {(header.icon || header.showTitle) && (
+        <Link
+          to="/"
+          aria-label={brandOnly ? `${header.title} (home)` : undefined}
+          className="-mx-1 flex shrink-0 items-center gap-2 rounded-md px-1 py-1 font-semibold outline-none hover:opacity-80 focus-visible:ring-4 focus-visible:ring-ring/20"
+        >
+          {header.icon && (
+            <img src={header.icon.src} alt="" className={header.icon.mono ? "size-7 dark:invert" : "size-7"} />
+          )}
+          {header.showTitle && header.title}
+        </Link>
+      )}
       <nav className="flex min-w-0 flex-1 gap-1 overflow-x-auto">
-        {pages.map((p) => (
+        {tabs.map((p) => (
           <Link
             key={p.slug}
-            to="/$page"
-            params={{ page: p.slug }}
+            to={p.slug === home ? "/" : "/$page"}
+            params={p.slug === home ? {} : { page: p.slug }}
             className={
               p.slug === active
                 ? "rounded-md bg-primary-soft px-3 py-1.5 text-sm font-medium whitespace-nowrap text-primary"

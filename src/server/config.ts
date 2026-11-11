@@ -3,6 +3,7 @@ import { readdir, readFile } from "node:fs/promises"
 import path from "node:path"
 import { LineCounter, parseDocument } from "yaml"
 import { z } from "zod"
+import { iconOption } from "@/plugins/_shared/icons"
 import { serverPlugins } from "@/plugins/server"
 import type { PluginDefinition } from "@/sdk/plugin"
 import { DURATION_RE, parseDuration } from "./duration"
@@ -25,6 +26,21 @@ export const dashboardSchema = z
       })
       .strict()
       .default({ mode: "system" }),
+    header: z
+      .object({
+        title: z.string().optional().describe("Text next to the icon. Default: the dashboard title"),
+        showTitle: z.boolean().default(true).describe("Show the text next to the icon"),
+        icon: z
+          .union([z.literal("default"), z.literal("none"), iconOption])
+          .default("default")
+          .describe("default (the harebear mark), none, or si:/di:/https icon"),
+        homeInNav: z
+          .boolean()
+          .default(true)
+          .describe("Also list the home page (the first page) as a tab. The icon always links home."),
+      })
+      .strict()
+      .default({ showTitle: true, icon: "default", homeInNav: true }),
     search: z
       .object({
         engine: z

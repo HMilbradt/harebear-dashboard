@@ -42,7 +42,7 @@ There is no login yet. Run it behind a reverse proxy that limits who can reach i
 
 ## Config
 
-- `dashboard.yaml`: title, `theme` (`accent`, `radius`, `mode`), and `search` (`engine`, `bangs`).
+- `dashboard.yaml`: title, `header` (`icon`, `title`, `showTitle`, `homeInNav`), `theme` (`accent`, `radius`, `mode`), and `search` (`engine`, `bangs`). The header icon always links to the first page; with `homeInNav: false` only the other pages appear as tabs.
 - `pages/<slug>.yaml`: one page each, served at `/<slug>`; the first by `order` is also `/`. A page has `title`, `order`, `width` (`slim`, `default`, `wide`), `center`, and one to three `columns` (`size: small | full`, at least one full).
 - Every widget has `id` (unique on the page) and `type`, plus optional `title`, `titleUrl`, `refresh` (`30s`, `5m`, `1h`, `never`) and `hideHeader`. Its other keys are the widget's options, checked strictly: a typo is an error with a file and line number.
 - `type: group` (tabs) and `type: split` (side by side) hold other widgets in `widgets:`.

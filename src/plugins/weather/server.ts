@@ -22,6 +22,7 @@ export default definePlugin({
     units: z.enum(["metric", "imperial"]).default("metric"),
     hourFormat: z.enum(["12h", "24h"]).default("24h"),
     hideLocation: z.boolean().default(false),
+    week: z.boolean().default(false).describe("Also show the next 7 days"),
   }),
   hosts: () => ["geocoding-api.open-meteo.com", "api.open-meteo.com"],
   refresh: "15m",
@@ -32,9 +33,9 @@ export default definePlugin({
       longitude: String(place.longitude),
       current: "temperature_2m,apparent_temperature,weather_code,is_day",
       hourly: "temperature_2m,precipitation_probability,weather_code,is_day",
-      daily: "temperature_2m_max,temperature_2m_min,sunrise,sunset",
+      daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
       timezone: "auto",
-      forecast_days: "2",
+      forecast_days: options.week ? "7" : "2",
       temperature_unit: options.units === "imperial" ? "fahrenheit" : "celsius",
     })
     const res = await fetch(`https://api.open-meteo.com/v1/forecast?${q}`)
@@ -69,6 +70,20 @@ export default definePlugin({
       high: Math.round(f.daily.temperature_2m_max[0] ?? 0),
       low: Math.round(f.daily.temperature_2m_min[0] ?? 0),
       hours,
+      weekMin: Math.round(Math.min(...f.daily.temperature_2m_min)),
+      weekMax: Math.round(Math.max(...f.daily.temperature_2m_max)),
+      days: options.week
+        ? f.daily.time.map((date, i) => ({
+            label:
+              i === 0
+                ? "Today"
+                : new Date(`${date}T12:00:00Z`).toLocaleDateString("en", { weekday: "short", timeZone: "UTC" }),
+            code: f.daily.weather_code[i] ?? 0,
+            high: Math.round(f.daily.temperature_2m_max[i] ?? 0),
+            low: Math.round(f.daily.temperature_2m_min[i] ?? 0),
+            precip: f.daily.precipitation_probability_max[i] ?? 0,
+          }))
+        : [],
     }
   },
 })
@@ -82,7 +97,13 @@ interface Forecast {
     weather_code: number[]
     is_day: number[]
   }
-  daily: { temperature_2m_max: number[]; temperature_2m_min: number[] }
+  daily: {
+    time: string[]
+    weather_code: number[]
+    temperature_2m_max: number[]
+    temperature_2m_min: number[]
+    precipitation_probability_max: number[]
+  }
 }
 
 async function geocode(location: string, fetch: PluginContext<unknown, unknown>["fetch"]) {

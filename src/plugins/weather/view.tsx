@@ -71,6 +71,42 @@ export default function WeatherView({ data }: ViewProps<typeof plugin>) {
             </div>
           ))}
       </div>
+      {data.days.length > 0 && (
+        <div className="flex flex-col divide-y divide-border">
+          {data.days.map((d) => {
+            const span = Math.max(1, data.weekMax - data.weekMin)
+            return (
+              <div
+                key={d.label}
+                className="grid grid-cols-[2.75rem_1rem_2rem_1.75rem_1fr_1.75rem] items-center gap-2 py-1.5"
+              >
+                <Text size="sm" weight="medium">
+                  {d.label}
+                </Text>
+                <WeatherIcon code={d.code} isDay size="sm" />
+                <Text size="xs" tone={d.precip >= 50 ? "info" : "muted"} tabular>
+                  {d.precip}%
+                </Text>
+                <Text size="sm" tone="muted" tabular>
+                  {d.low}°
+                </Text>
+                <div className="relative h-1.5 rounded-full bg-muted">
+                  <span
+                    className="absolute inset-y-0 rounded-full bg-primary"
+                    style={{
+                      left: `${((d.low - data.weekMin) / span) * 100}%`,
+                      right: `${((data.weekMax - d.high) / span) * 100}%`,
+                    }}
+                  />
+                </div>
+                <Text size="sm" tabular>
+                  {d.high}°
+                </Text>
+              </div>
+            )
+          })}
+        </div>
+      )}
       <Row justify="between">
         <Text size="sm" tone="muted" truncate>
           {data.place}
