@@ -1,1 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="harebear-dashboard"><rect width="32" height="32" rx="8" fill="#2f5bd3"/><path d="M9 9h5v14H9zM18 9h5v6h-5zM18 17h5v6h-5z" fill="#fff"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="harebear-dashboard">
+  <title>harebear-dashboard</title>
+  <defs>
+    <linearGradient id="tile" x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6b8fff"/>
+      <stop offset="0.55" stop-color="#3d5fd8"/>
+      <stop offset="1" stop-color="#7d5bd0"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="32" y1="2" x2="32" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#tile)"/>
+  <rect x="2.5" y="2.5" width="59" height="59" rx="16.5" stroke="url(#shine)"/>
+  <!-- Hare ears over a bear-round head: two pills and a circle. -->
+  <rect x="20" y="11" width="8.5" height="22" rx="4.25" fill="#fff" transform="rotate(-10 24.25 22)"/>
+  <rect x="35.5" y="11" width="8.5" height="22" rx="4.25" fill="#fff" transform="rotate(10 39.75 22)"/>
+  <circle cx="32" cy="38" r="13" fill="#fff"/>
+  <circle cx="27.5" cy="37" r="1.9" fill="#3d5fd8"/>
+  <circle cx="36.5" cy="37" r="1.9" fill="#3d5fd8"/>
+  <path d="M30.2 42.2c.9.9 2.7.9 3.6 0" stroke="#3d5fd8" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

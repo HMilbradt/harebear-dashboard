@@ -37,7 +37,10 @@ function Nav({ active }: { active: string }) {
   const { pages, title } = useDashboard()
   return (
     <header className="mx-auto flex w-full items-center gap-4 px-4 pt-4 sm:px-6">
-      <span className="font-semibold">{title}</span>
+      <span className="flex items-center gap-2 font-semibold">
+        <img src="/favicon.svg" alt="" className="size-6" />
+        {title}
+      </span>
       <nav className="flex min-w-0 flex-1 gap-1 overflow-x-auto">
         {pages.map((p) => (
           <Link
