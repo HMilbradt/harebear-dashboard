@@ -38,7 +38,27 @@ columns:
 
 Save it and the page appears. `examples/config/` has a fuller setup and `docker-compose.yaml` adds the read-only Docker API the `docker` widget needs.
 
-There is no login yet. Run it behind a reverse proxy that limits who can reach it.
+## Sign in
+
+`auth.mode` in `dashboard.yaml` is `none` (the default: restrict access at your proxy), `password`, or `proxy`.
+
+```yaml
+auth:
+  mode: password
+  passwordHash: env:DASHBOARD_PASSWORD_HASH
+```
+
+Make the hash with `docker run --rm -it ghcr.io/hmilbradt/harebear-dashboard:main harebear-dashboard hash-password` and pass it to the container as `DASHBOARD_PASSWORD_HASH`. Sessions last 30 days; changing the password signs everyone out. Ten wrong passwords in 15 minutes lock sign in for that address.
+
+```yaml
+auth:
+  mode: proxy # Authelia, Authentik, oauth2-proxy...
+  proxy:
+    header: Remote-User
+    trustedProxies: [192.168.1.10/32]
+```
+
+The header is believed only from those addresses. `/healthz` stays public.
 
 ## Config
 

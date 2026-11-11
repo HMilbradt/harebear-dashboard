@@ -26,6 +26,46 @@ export const dashboardSchema = z
       })
       .strict()
       .default({ mode: "system" }),
+    auth: z
+      .object({
+        mode: z
+          .enum(["none", "password", "proxy"])
+          .default("none")
+          .describe(
+            "none: anyone who can reach it; password: one password; proxy: trust a header from your auth proxy",
+          ),
+        passwordHash: envRef
+          .optional()
+          .describe("env:NAME holding the output of `harebear-dashboard hash-password`. Required for mode: password"),
+        proxy: z
+          .object({
+            header: z.string().default("Remote-User").describe("Header carrying the signed-in user"),
+            trustedProxies: z
+              .array(z.string())
+              .default([])
+              .describe("IPv4 CIDRs or IPv6 addresses the header is accepted from"),
+          })
+          .strict()
+          .default({ header: "Remote-User", trustedProxies: [] }),
+      })
+      .strict()
+      .default({ mode: "none", proxy: { header: "Remote-User", trustedProxies: [] } })
+      .superRefine((a, ctx) => {
+        if (a.mode === "password" && !a.passwordHash) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["passwordHash"],
+            message: "mode: password needs passwordHash: env:NAME",
+          })
+        }
+        if (a.mode === "proxy" && !a.proxy.trustedProxies.length) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["proxy", "trustedProxies"],
+            message: "mode: proxy needs at least one trusted proxy address",
+          })
+        }
+      }),
     header: z
       .object({
         title: z.string().optional().describe("Text next to the icon. Default: the dashboard title"),

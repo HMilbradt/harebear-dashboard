@@ -22,6 +22,9 @@ export type ClientNode =
 
 export interface ShellData {
   title: string
+  /** Auth mode, and whether this request is signed in. Signed-out shells carry no pages or errors. */
+  auth: "none" | "password" | "proxy"
+  signedIn: boolean
   header: { title: string; showTitle: boolean; icon: { src: string; mono: boolean } | null; homeInNav: boolean }
   theme: DashboardConfig["theme"]
   search: DashboardConfig["search"]
@@ -46,9 +49,14 @@ export const getShell = createServerFn({ method: "GET" }).handler(async (): Prom
   const { configStore } = await import("./store")
   const { dashboardSchema } = await import("./config")
   const { resolveIcon } = await import("@/plugins/_shared/icons")
+  const { authorizeRequest } = await import("./session")
+  const { getRequest } = await import("@tanstack/react-start/server")
   const s = await configStore().get()
   const dash = s.config?.dashboard ?? dashboardSchema.parse({})
+  const signedIn = !!(await authorizeRequest(getRequest()))
   return {
+    auth: dash.auth.mode,
+    signedIn,
     title: dash.title,
     header: {
       title: dash.header.title ?? dash.title,
@@ -63,10 +71,10 @@ export const getShell = createServerFn({ method: "GET" }).handler(async (): Prom
     },
     theme: dash.theme,
     search: dash.search,
-    pages: s.config?.pages.map((p) => ({ slug: p.slug, title: p.title })) ?? [],
+    pages: signedIn ? (s.config?.pages.map((p) => ({ slug: p.slug, title: p.title })) ?? []) : [],
     version: s.version,
-    errors: s.errors,
-    configDir: s.dir,
+    errors: signedIn ? s.errors : [],
+    configDir: signedIn ? s.dir : "",
   }
 })
 

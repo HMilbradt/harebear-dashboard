@@ -6,15 +6,19 @@ import app from "./dist/server/server.js"
 const host = process.env.HOST ?? "0.0.0.0"
 const port = Number(process.env.PORT ?? 3000)
 
+const PEER_HEADER = "x-harebear-peer"
+
 serve({
   hostname: host,
   port,
-  middleware: [staticMiddleware({ dir: new URL("./dist/client", import.meta.url).pathname })],
+  middleware: [
+    // The socket address, for auth.mode: proxy. A client-sent value is never trusted.
+    (request, next) => {
+      request.headers.delete(PEER_HEADER)
+      if (request.ip) request.headers.set(PEER_HEADER, request.ip)
+      return next()
+    },
+    staticMiddleware({ dir: new URL("./dist/client", import.meta.url).pathname }),
+  ],
   fetch: app.fetch,
 })
-
-if (!["127.0.0.1", "localhost", "::1"].includes(host) && (process.env.AUTH ?? "none") === "none") {
-  console.warn(
-    `[auth] No authentication, listening on ${host}:${port}. Put the dashboard behind a proxy that restricts access.`,
-  )
-}

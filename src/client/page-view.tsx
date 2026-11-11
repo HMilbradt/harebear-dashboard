@@ -34,7 +34,7 @@ export function ConfigErrors() {
 }
 
 function Nav({ active }: { active: string }) {
-  const { pages, header } = useDashboard()
+  const { pages, header, auth } = useDashboard()
   const home = pages[0]?.slug
   const tabs = header.homeInNav ? pages : pages.slice(1)
   const brandOnly = !header.showTitle
@@ -68,6 +68,16 @@ function Nav({ active }: { active: string }) {
           </Link>
         ))}
       </nav>
+      {auth === "password" && (
+        <form method="post" action="/logout">
+          <button
+            type="submit"
+            className="rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            Sign out
+          </button>
+        </form>
+      )}
       {/* harebear-ui's ThemeToggle reads the stored mode on first render, so it cannot be server rendered. */}
       <ClientOnly fallback={<span className="size-9" />}>
         <ThemeToggle />
