@@ -1,0 +1,25 @@
+title: Home
+order: 1
+width: slim
+center: true
+columns:
+  - size: full
+    widgets:
+      - id: search
+        type: search
+      - id: news
+        type: rss
+        title: News
+        feeds:
+          - url: https://hnrss.org/frontpage
+            title: Hacker News
+          - url: https://blog.cloudflare.com/rss/
+            title: Cloudflare
+  - size: small
+    widgets:
+      - id: weather
+        type: weather
+        location: Vancouver, British Columbia, Canada
+        hourFormat: 12h
+      - id: calendar
+        type: calendar

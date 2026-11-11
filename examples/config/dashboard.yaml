@@ -1,0 +1,13 @@
+title: Home
+theme:
+  accent: "#2f5bd3"
+  mode: system
+search:
+  engine: duckduckgo
+  bangs:
+    - shortcut: "!yt"
+      title: YouTube
+      url: https://www.youtube.com/results?search_query={q}
+    - shortcut: "!gh"
+      title: GitHub
+      url: https://github.com/search?q={q}

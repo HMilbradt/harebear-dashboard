@@ -1,0 +1,40 @@
+title: Homelab
+order: 2
+width: wide
+columns:
+  - size: small
+    widgets:
+      - id: server
+        type: server-stats
+      - id: clock
+        type: clock
+        zones:
+          - timezone: Europe/London
+          - timezone: Asia/Tokyo
+  - size: full
+    widgets:
+      - id: services
+        type: monitor
+        title: Services
+        sites:
+          - title: GitHub
+            url: https://github.com
+            icon: si:github
+          - title: Cloudflare
+            url: https://www.cloudflare.com
+            icon: si:cloudflare
+      # Needs a Docker socket proxy; see docker-compose.yaml.
+      # - id: containers
+      #   type: docker
+  - size: small
+    widgets:
+      - id: links
+        type: bookmarks
+        groups:
+          - title: Dev
+            links:
+              - title: GitHub
+                url: https://github.com
+                icon: si:github
+              - title: MDN
+                url: https://developer.mozilla.org
