@@ -9,7 +9,7 @@ const port = Number(process.env.PORT ?? 3000)
 serve({
   hostname: host,
   port,
-  middleware: [staticMiddleware({ dir: new URL("./dist/client", import.meta.url).pathname, maxAge: 3600 })],
+  middleware: [staticMiddleware({ dir: new URL("./dist/client", import.meta.url).pathname })],
   fetch: app.fetch,
 })
 
