@@ -5,6 +5,7 @@
  * style, so a plugin needs no CSS and always matches the theme.
  */
 import * as UI from "harebear-ui"
+import type * as React from "react"
 import { type ComponentType, createElement } from "react"
 
 export * from "./kit/layout"
@@ -37,4 +38,18 @@ export const UsageMeter = seal(UI.UsageMeter, "UsageMeter")
 export const BarList = seal(UI.BarList, "BarList")
 export const Sparkline = seal(UI.Sparkline, "Sparkline")
 export const Skeleton = seal(UI.Skeleton, "Skeleton")
+export const Stack = seal(UI.Stack, "Stack")
+export const Row = seal(UI.Row, "Row")
+export const Text = seal(UI.Text, "Text")
+export const Heading = seal(UI.Heading, "Heading")
+export const Metric = seal(UI.Metric, "Metric")
+export const MetricGroup = seal(UI.MetricGroup, "MetricGroup")
+export const MediaItem = seal(UI.MediaItem, "MediaItem")
+export const ShowMore = seal(UI.ShowMore, "ShowMore")
+/** Breakpoints follow the widget's width: sm >= 28rem, md >= 42rem, lg >= 56rem. */
+export const Grid = seal(
+  (props: Omit<React.ComponentProps<typeof UI.Grid>, "query">) =>
+    createElement(UI.Grid, { ...props, query: "container" }),
+  "Grid",
+)
 export type { StatusTone } from "harebear-ui"

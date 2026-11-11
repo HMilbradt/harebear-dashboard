@@ -1,4 +1,4 @@
-import { ClientOnly, Link } from "@tanstack/react-router"
+import { Link } from "@tanstack/react-router"
 import { Callout, ThemeToggle, TooltipProvider } from "harebear-ui"
 import { TriangleAlert } from "lucide-react"
 import { useDashboard } from "@/client/dashboard-context"
@@ -78,10 +78,7 @@ function Nav({ active }: { active: string }) {
           </button>
         </form>
       )}
-      {/* harebear-ui's ThemeToggle reads the stored mode on first render, so it cannot be server rendered. */}
-      <ClientOnly fallback={<span className="size-9" />}>
-        <ThemeToggle />
-      </ClientOnly>
+      <ThemeToggle />
     </header>
   )
 }
