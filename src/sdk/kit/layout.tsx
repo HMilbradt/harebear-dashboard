@@ -276,7 +276,7 @@ export function Metric({ label, value, unit, delta, lowerIsBetter, align = "cent
           ) : null}
         </span>
       )}
-      <span className="text-xl font-semibold tracking-tight whitespace-nowrap tabular-nums @xs:text-2xl">
+      <span className="text-xl font-semibold tracking-tight whitespace-nowrap tabular-nums @sm:text-2xl">
         {value}
         {unit && <span className="ml-0.5 text-xs font-medium text-muted-foreground">{unit}</span>}
       </span>
