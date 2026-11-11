@@ -11,6 +11,7 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production \
     CONFIG_DIR=/config \
+    PLUGINS_DIR=/plugins \
     HOST=0.0.0.0 \
     PORT=3000
 COPY --from=build /app/package.json /app/server.mjs ./

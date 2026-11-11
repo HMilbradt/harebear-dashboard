@@ -27,6 +27,10 @@ src/sdk/               Plugin API (definePlugin, ViewProps) and the sealed view 
 src/plugins/<type>/    server.ts (definePlugin: options, secrets, hosts, load) and view.tsx (default export)
 src/plugins/server.ts  Registry of plugin definitions (server only)
 src/plugins/views.ts   Registry of views (browser)
+src/server/local-plugins.ts  PLUGINS_DIR compiler (esbuild, shims, guardrails, live rebuild)
+src/server/registry.ts Built-in plus local plugin lookup
+src/server/auth.ts, session.ts  Password and proxy sign in; src/start.ts guards every request
+src/client/local-views.tsx  Loads local plugin views (registered on the server, lazy in the browser)
 ```
 
 ## Adding a widget

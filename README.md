@@ -84,8 +84,38 @@ The header is believed only from those addresses. `/healthz` stays public.
 | `seerr`             | Trending or popular media from Seerr / Overseerr        | `secrets.apiKey`      |
 | `server-stats`      | CPU, memory, disks, load, uptime of the host            |                       |
 | `docker`            | Containers and their state                              | A Docker socket proxy |
+| `http`              | Any JSON API as stats, key-value pairs, a list, links or a table, no code | |
 
 Options for each are in `src/plugins/<type>/server.ts`.
+
+```yaml
+# The http widget: Speedtest Tracker without a plugin
+- id: speed
+  type: http
+  url: https://speedtest.example.com/api/v1/results/latest
+  headers:
+    authorization: Bearer {secret.token}
+  secrets:
+    token: env:SPEEDTEST_TOKEN
+  view: stats
+  fields:
+    - { label: Down, path: data.download_bits, format: number, scale: 0.000001, decimals: 1, unit: Mbps }
+    - { label: Ping, path: data.ping, format: number, decimals: 0, unit: ms }
+```
+
+## Your own widgets
+
+Mount a folder at `/plugins` (`PLUGINS_DIR`). Each subfolder is one widget type, named after the folder:
+
+```
+plugins/github-repo/
+  server.ts   export default definePlugin({ id, name, description, options, secrets?, hosts, load })
+  view.tsx    export default function View({ data }) built from harebear-dashboard/sdk components
+```
+
+`examples/plugins/github-repo` is a complete one, and `harebear-dashboard new-plugin <id>` scaffolds another. The dashboard compiles plugins with esbuild at startup and again on every save; open pages pick up the new view without a reload. A broken edit keeps the last good build running and shows the error on the widget.
+
+Plugins are trusted code: only mount folders you wrote or reviewed. Guardrails, not a sandbox: `server.ts` reaches the network only through `ctx.fetch` (limited to the hosts it declares; the global `fetch` and `process` are shadowed), Node built-ins, other packages, `eval` and dynamic `import()` are refused, and views cannot use `dangerouslySetInnerHTML`. The browser only ever receives what `load` returns.
 
 ## How it stays safe
 

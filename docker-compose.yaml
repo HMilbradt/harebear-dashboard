@@ -8,6 +8,8 @@ services:
     volumes:
       # Mount read only to freeze the dashboard; edits on the host apply live.
       - ./config:/config:ro
+      # Optional: your own widget types, compiled on start and on every save.
+      # - ./plugins:/plugins:ro
     environment:
       TZ: America/Vancouver
       # Secrets are referenced from YAML as env:NAME.
