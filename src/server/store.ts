@@ -84,6 +84,8 @@ class ConfigStore {
       for (const e of result.errors) console.warn(`  ${e.file}${e.line ? `:${e.line}` : ""} ${e.path} ${e.message}`)
     } else {
       console.log(`[config] loaded ${result.config?.pages.length ?? 0} page(s), version ${this.state.version}`)
+      // Editor completion for every widget type; skipped quietly when the config is mounted read only.
+      void import("./schema").then((m) => m.writeSchemas(this.state.dir))
       const host = process.env.HOST ?? "0.0.0.0"
       if (result.config?.dashboard.auth.mode === "none" && !["127.0.0.1", "localhost", "::1"].includes(host)) {
         console.warn("[auth] mode none: anyone who can reach this port sees the dashboard. Restrict it at your proxy.")

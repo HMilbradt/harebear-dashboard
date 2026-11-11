@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../.schema/page.json
 title: Homelab
 order: 2
 width: wide

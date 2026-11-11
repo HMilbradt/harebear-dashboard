@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "vite dev --port 3000",
-    "build": "vite build",
+    "build": "vite build && node scripts/build-cli.mjs",
     "start": "node server.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
@@ -49,5 +49,8 @@
     "typescript": "^7.0.2",
     "vite": "^8.3.8",
     "vitest": "^5.1.0"
+  },
+  "bin": {
+    "harebear-dashboard": "dist/cli.mjs"
   }
 }

@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=.schema/dashboard.json
 title: Home
 header:
   # icon: default (the harebear mark), none, si:<name>, di:<name> or an https URL

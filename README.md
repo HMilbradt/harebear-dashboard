@@ -71,20 +71,20 @@ The header is believed only from those addresses. `/healthz` stays public.
 
 ## Widgets
 
-| Type                | What it shows                                           | Needs                 |
-| :------------------ | :------------------------------------------------------ | :-------------------- |
-| `search`            | Search box, `/` to focus, bangs like `!yt cats`         |                       |
-| `clock`             | Time, date, extra time zones                            |                       |
-| `calendar`          | This month                                              |                       |
-| `bookmarks`         | Groups of links with icons (`si:`, `di:` or https URLs) |                       |
-| `monitor`           | Up/down and latency for a list of sites                 |                       |
-| `weather`           | Current, next hours, high and low (Open-Meteo)          |                       |
-| `rss`               | RSS and Atom feeds, merged by date                      |                       |
-| `speedtest-tracker` | Latest Speedtest Tracker result vs. average             | `secrets.token`       |
-| `seerr`             | Trending or popular media from Seerr / Overseerr        | `secrets.apiKey`      |
-| `server-stats`      | CPU, memory, disks, load, uptime of the host            |                       |
-| `docker`            | Containers and their state                              | A Docker socket proxy |
-| `http`              | Any JSON API as stats, key-value pairs, a list, links or a table, no code | |
+| Type                | What it shows                                                             | Needs                 |
+| :------------------ | :------------------------------------------------------------------------ | :-------------------- |
+| `search`            | Search box, `/` to focus, bangs like `!yt cats`                           |                       |
+| `clock`             | Time, date, extra time zones                                              |                       |
+| `calendar`          | This month                                                                |                       |
+| `bookmarks`         | Groups of links with icons (`si:`, `di:` or https URLs)                   |                       |
+| `monitor`           | Up/down and latency for a list of sites                                   |                       |
+| `weather`           | Current, next hours, high and low (Open-Meteo)                            |                       |
+| `rss`               | RSS and Atom feeds, merged by date                                        |                       |
+| `speedtest-tracker` | Latest Speedtest Tracker result vs. average                               | `secrets.token`       |
+| `seerr`             | Trending or popular media from Seerr / Overseerr                          | `secrets.apiKey`      |
+| `server-stats`      | CPU, memory, disks, load, uptime of the host                              |                       |
+| `docker`            | Containers and their state                                                | A Docker socket proxy |
+| `http`              | Any JSON API as stats, key-value pairs, a list, links or a table, no code |                       |
 
 Options for each are in `src/plugins/<type>/server.ts`.
 
@@ -116,6 +116,22 @@ plugins/github-repo/
 `examples/plugins/github-repo` is a complete one, and `harebear-dashboard new-plugin <id>` scaffolds another. The dashboard compiles plugins with esbuild at startup and again on every save; open pages pick up the new view without a reload. A broken edit keeps the last good build running and shows the error on the widget.
 
 Plugins are trusted code: only mount folders you wrote or reviewed. Guardrails, not a sandbox: `server.ts` reaches the network only through `ctx.fetch` (limited to the hosts it declares; the global `fetch` and `process` are shadowed), Node built-ins, other packages, `eval` and dynamic `import()` are refused, and views cannot use `dangerouslySetInnerHTML`. The browser only ever receives what `load` returns.
+
+## CLI
+
+The image ships a `harebear-dashboard` command (`docker exec <container> harebear-dashboard ...`); in a checkout, `node dist/cli.mjs` after `pnpm build`.
+
+| Command | What it does |
+| :- | :- |
+| `init [dir]` | Copy the example config, with editor schemas |
+| `validate [dir]` | Check a config; errors print as `file:line path message`, exit 1 |
+| `schema [dir]` | Write `.schema/dashboard.json` and `page.json` (completion for every widget, local ones too) |
+| `docs [type]` | List widget types, or one type's options |
+| `data <page>/<widget>` | Run one widget's load and print the JSON its view gets |
+| `new-plugin <id> [dir]` | Scaffold a local plugin |
+| `hash-password` | Hash a password for `auth.passwordHash` |
+
+The server also writes `.schema/` into the config directory whenever the config loads, unless it is mounted read only. The example YAML files point editors at it with a `yaml-language-server` comment.
 
 ## How it stays safe
 
