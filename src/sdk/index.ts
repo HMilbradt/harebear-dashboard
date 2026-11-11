@@ -8,6 +8,7 @@ import * as UI from "harebear-ui"
 import { type ComponentType, createElement } from "react"
 
 export * from "./kit/layout"
+export { z } from "zod"
 export { definePlugin, hostOf } from "./plugin"
 export type { BrokerInit, BrokerResponse, PluginContext, PluginDefinition, ViewProps } from "./plugin"
 

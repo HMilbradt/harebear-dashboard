@@ -4,9 +4,9 @@ import path from "node:path"
 import { LineCounter, parseDocument } from "yaml"
 import { z } from "zod"
 import { iconOption } from "@/plugins/_shared/icons"
-import { serverPlugins } from "@/plugins/server"
-import type { PluginDefinition } from "@/sdk/plugin"
 import { DURATION_RE, parseDuration } from "./duration"
+import { localPlugin } from "./local-plugins"
+import { getPlugin, pluginTypes } from "./registry"
 
 /* ---------- schemas ---------- */
 
@@ -336,13 +336,16 @@ function parseNode(
     return undefined
   }
   const w = base.data
-  const plugin = serverPlugins.get(w.type) as PluginDefinition | undefined
+  const plugin = getPlugin(w.type)
   if (!plugin) {
+    const broken = localPlugin(w.type)?.error
     errors.push({
       file: src.file,
       line: src.locate([...at, "type"]),
       path: pathString([...at, "type"]),
-      message: `Unknown widget type "${w.type}". Available: ${[...serverPlugins.keys(), "group", "split"].join(", ")}`,
+      message: broken
+        ? `Plugin "${w.type}" failed to build: ${broken}`
+        : `Unknown widget type "${w.type}". Available: ${[...pluginTypes(), "group", "split"].join(", ")}`,
     })
     return undefined
   }
@@ -379,8 +382,9 @@ function parseNode(
 
   const secretRefs = w.secrets ?? {}
   const declared = plugin.secrets?.shape ?? {}
+  const openSecrets = !!(plugin.secrets as { _zod?: { def?: { catchall?: unknown } } } | undefined)?._zod?.def?.catchall
   for (const key of Object.keys(secretRefs)) {
-    if (!(key in declared)) {
+    if (!openSecrets && !(key in declared)) {
       errors.push({
         file: src.file,
         line: src.locate([...at, "secrets", key]),

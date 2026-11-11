@@ -1,9 +1,9 @@
 import "@tanstack/react-start/server-only"
 import { createHash } from "node:crypto"
-import { serverPlugins } from "@/plugins/server"
-import type { PluginDefinition } from "@/sdk/plugin"
 import { createBroker } from "./broker"
 import { resolveEnv, type WidgetConfig } from "./config"
+import { localPlugin } from "./local-plugins"
+import { getPlugin } from "./registry"
 
 export type Json = string | number | boolean | null | Json[] | { [key: string]: Json }
 
@@ -27,7 +27,7 @@ const cache = g.__harebearCache
 /** Same type, options and secret refs share one cache entry, across pages. */
 function keyOf(w: WidgetConfig): string {
   return createHash("sha1")
-    .update(JSON.stringify([w.type, w.options, w.secretRefs]))
+    .update(JSON.stringify([w.type, localPlugin(w.type)?.hash, w.options, w.secretRefs]))
     .digest("hex")
 }
 
@@ -58,7 +58,7 @@ export async function widgetData(w: WidgetConfig): Promise<WidgetResult> {
 }
 
 async function run(w: WidgetConfig): Promise<WidgetResult> {
-  const plugin = serverPlugins.get(w.type) as PluginDefinition | undefined
+  const plugin = getPlugin(w.type)
   if (!plugin) return { status: "error", error: `Unknown widget type ${w.type}`, updatedAt: Date.now() }
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), LOAD_TIMEOUT)

@@ -13,6 +13,10 @@ export interface WidgetMeta {
   titleUrl?: string
   refreshMs: number
   hideHeader: boolean
+  /** Local plugins: the built view bundle. */
+  viewUrl?: string
+  /** Local plugins: the latest build failed (the last good build still runs). */
+  pluginError?: string
 }
 
 export type ClientNode =
@@ -83,6 +87,7 @@ export const getPage = createServerFn({ method: "GET" })
   .handler(async ({ data }): Promise<PageData | null> => {
     const { configStore } = await import("./store")
     const { widgetData } = await import("./runner")
+    const { localPlugin } = await import("./local-plugins")
     const s = await configStore().get()
     const page = data.slug ? s.config?.pages.find((p) => p.slug === data.slug) : s.config?.pages[0]
     if (!page) {
@@ -102,6 +107,8 @@ export const getPage = createServerFn({ method: "GET" })
           titleUrl: w.titleUrl,
           refreshMs: w.refreshMs,
           hideHeader: w.hideHeader,
+          viewUrl: localPlugin(w.type)?.viewUrl,
+          pluginError: localPlugin(w.type)?.error,
         },
       }
     }

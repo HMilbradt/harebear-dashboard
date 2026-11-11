@@ -16,6 +16,7 @@ import {
 import { CircleAlert, TriangleAlert } from "lucide-react"
 import * as React from "react"
 import { bare, views } from "@/plugins/views"
+import { localView } from "./local-views"
 import { type ClientNode, getWidget, type WidgetMeta, type WidgetResult } from "@/server/fns"
 
 class ViewBoundary extends React.Component<{ children: React.ReactNode }, { error?: Error }> {
@@ -51,7 +52,7 @@ function useWidget(page: string, version: number, w: WidgetMeta, initial?: Widge
 }
 
 function WidgetBody({ w, result, pending }: { w: WidgetMeta; result?: WidgetResult; pending: boolean }) {
-  const View = views[w.type]
+  const View = views[w.type] ?? (w.viewUrl ? localView(w.viewUrl) : undefined)
   if (!View) return <ErrorState message={`No view for widget type ${w.type}`} />
   if (!result) {
     return pending ? (
@@ -65,7 +66,9 @@ function WidgetBody({ w, result, pending }: { w: WidgetMeta; result?: WidgetResu
   if (result.status === "error" && result.data === undefined) return <ErrorState message={result.error} />
   return (
     <ViewBoundary>
-      <View data={result.data} />
+      <React.Suspense fallback={null}>
+        <View data={result.data} />
+      </React.Suspense>
     </ViewBoundary>
   )
 }
@@ -84,6 +87,11 @@ export function WidgetCard({
   const q = useWidget(page, version, w, initial)
   const result = q.data
   const stale = result?.status === "error" && result.data !== undefined
+  const warning = stale
+    ? `Showing older data. Last refresh failed: ${result.error}`
+    : w.pluginError
+      ? `Plugin build failed, running the last good build: ${w.pluginError}`
+      : undefined
   if (bare.has(w.type)) return <WidgetBody w={w} result={result} pending={q.isPending} />
   return (
     <Card size="sm" className="@container gap-3" data-widget={w.id}>
@@ -98,12 +106,12 @@ export function WidgetCard({
               w.title
             )}
           </CardTitle>
-          {stale && (
+          {warning && (
             <Tooltip>
-              <TooltipTrigger aria-label="Showing older data">
+              <TooltipTrigger aria-label={warning}>
                 <TriangleAlert className="size-4 text-warning" />
               </TooltipTrigger>
-              <TooltipContent>Showing older data. Last refresh failed: {result.error}</TooltipContent>
+              <TooltipContent>{warning}</TooltipContent>
             </Tooltip>
           )}
         </CardHeader>

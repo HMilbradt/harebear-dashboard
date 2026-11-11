@@ -3,6 +3,7 @@ import { watch } from "node:fs"
 import { mkdir, readdir, stat } from "node:fs/promises"
 import path from "node:path"
 import { type ConfigError, type LoadedConfig, loadConfig } from "./config"
+import { startLocalPlugins } from "./local-plugins"
 
 export interface StoreState {
   /** Bumped on every reload attempt, good or bad, so clients refetch. */
@@ -25,7 +26,11 @@ class ConfigStore {
 
   constructor(dir: string) {
     this.state = { version: 0, errors: [], dir }
-    this.ready = this.reload().then(() => this.watch())
+    // Local plugins first: page configs may use their widget types.
+    this.ready = startLocalPlugins(() => void this.reload())
+      .catch((err) => console.warn(`[plugins] ${(err as Error).message}`))
+      .then(() => this.reload())
+      .then(() => this.watch())
   }
 
   async get(): Promise<StoreState> {

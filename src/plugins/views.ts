@@ -3,6 +3,7 @@ import bookmarks from "./bookmarks/view"
 import calendar from "./calendar/view"
 import clock from "./clock/view"
 import docker from "./docker/view"
+import http from "./http/view"
 import monitor from "./monitor/view"
 import rss from "./rss/view"
 import search from "./search/view"
@@ -17,6 +18,7 @@ export const views: Record<string, ComponentType<{ data: any }>> = {
   calendar,
   clock,
   docker,
+  http,
   monitor,
   rss,
   search,

@@ -15,6 +15,7 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as HealthzRouteImport } from './routes/healthz'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LogoutRouteImport } from './routes/logout'
+import { Route as PluginsIdFileRouteImport } from './routes/plugins/$id/$file'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const LogoutRoute = LogoutRouteImport.update({
   path: '/logout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PluginsIdFileRoute = PluginsIdFileRouteImport.update({
+  id: '/plugins/$id/$file',
+  path: '/plugins/$id/$file',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/healthz': typeof HealthzRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/plugins/$id/$file': typeof PluginsIdFileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/healthz': typeof HealthzRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/plugins/$id/$file': typeof PluginsIdFileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,14 +79,36 @@ export interface FileRoutesById {
   '/healthz': typeof HealthzRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/plugins/$id/$file': typeof PluginsIdFileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$page' | '/events' | '/healthz' | '/login' | '/logout'
+  fullPaths:
+    | '/'
+    | '/$page'
+    | '/events'
+    | '/healthz'
+    | '/login'
+    | '/logout'
+    | '/plugins/$id/$file'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$page' | '/events' | '/healthz' | '/login' | '/logout'
+  to:
+    | '/'
+    | '/$page'
+    | '/events'
+    | '/healthz'
+    | '/login'
+    | '/logout'
+    | '/plugins/$id/$file'
   id:
-    '__root__' | '/' | '/$page' | '/events' | '/healthz' | '/login' | '/logout'
+    | '__root__'
+    | '/'
+    | '/$page'
+    | '/events'
+    | '/healthz'
+    | '/login'
+    | '/logout'
+    | '/plugins/$id/$file'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +118,7 @@ export interface RootRouteChildren {
   HealthzRoute: typeof HealthzRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
+  PluginsIdFileRoute: typeof PluginsIdFileRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -134,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LogoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/plugins/$id/$file': {
+      id: '/plugins/$id/$file'
+      path: '/plugins/$id/$file'
+      fullPath: '/plugins/$id/$file'
+      preLoaderRoute: typeof PluginsIdFileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -144,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthzRoute: HealthzRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
+  PluginsIdFileRoute: PluginsIdFileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
