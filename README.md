@@ -121,15 +121,15 @@ Plugins are trusted code: only mount folders you wrote or reviewed. Guardrails, 
 
 The image ships a `harebear-dashboard` command (`docker exec <container> harebear-dashboard ...`); in a checkout, `node dist/cli.mjs` after `pnpm build`.
 
-| Command | What it does |
-| :- | :- |
-| `init [dir]` | Copy the example config, with editor schemas |
-| `validate [dir]` | Check a config; errors print as `file:line path message`, exit 1 |
-| `schema [dir]` | Write `.schema/dashboard.json` and `page.json` (completion for every widget, local ones too) |
-| `docs [type]` | List widget types, or one type's options |
-| `data <page>/<widget>` | Run one widget's load and print the JSON its view gets |
-| `new-plugin <id> [dir]` | Scaffold a local plugin |
-| `hash-password` | Hash a password for `auth.passwordHash` |
+| Command                 | What it does                                                                                 |
+| :---------------------- | :------------------------------------------------------------------------------------------- |
+| `init [dir]`            | Copy the example config, with editor schemas                                                 |
+| `validate [dir]`        | Check a config; errors print as `file:line path message`, exit 1                             |
+| `schema [dir]`          | Write `.schema/dashboard.json` and `page.json` (completion for every widget, local ones too) |
+| `docs [type]`           | List widget types, or one type's options                                                     |
+| `data <page>/<widget>`  | Run one widget's load and print the JSON its view gets                                       |
+| `new-plugin <id> [dir]` | Scaffold a local plugin                                                                      |
+| `hash-password`         | Hash a password for `auth.passwordHash`                                                      |
 
 The server also writes `.schema/` into the config directory whenever the config loads, unless it is mounted read only. The example YAML files point editors at it with a `yaml-language-server` comment.
 

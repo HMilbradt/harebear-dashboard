@@ -4,11 +4,11 @@ A start page and homelab dashboard. TanStack Start (React 19, SSR), harebear-ui,
 
 ## Commands
 
-| Command                    | What it does                                                            |
-| :------------------------- | :---------------------------------------------------------------------- |
-| `pnpm dev`                 | Dev server on :3000, reading `./config` (copy `examples/config` first). |
-| `pnpm check`               | Lint, typecheck, build, tests. Run before saying you are done.          |
-| `pnpm build && pnpm start` | Production server (`server.mjs`, srvx) on :3000.                        |
+| Command                             | What it does                                                                                          |
+| :---------------------------------- | :---------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                          | Dev server on :3000, reading `./config` (copy `examples/config` first).                               |
+| `pnpm check`                        | Lint, typecheck, build, tests. Run before saying you are done.                                        |
+| `pnpm build && pnpm start`          | Production server (`server.mjs`, srvx) on :3000.                                                      |
 | `node dist/cli.mjs validate config` | Check a config the way the server does (also `docs`, `data <page>/<widget>`, `schema`, `new-plugin`). |
 
 `CONFIG_DIR` sets the config directory (default `./config`, `/config` in the image).
