@@ -9,6 +9,7 @@ A start page and homelab dashboard. TanStack Start (React 19, SSR), harebear-ui,
 | `pnpm dev`                 | Dev server on :3000, reading `./config` (copy `examples/config` first). |
 | `pnpm check`               | Lint, typecheck, build, tests. Run before saying you are done.          |
 | `pnpm build && pnpm start` | Production server (`server.mjs`, srvx) on :3000.                        |
+| `node dist/cli.mjs validate config` | Check a config the way the server does (also `docs`, `data <page>/<widget>`, `schema`, `new-plugin`). |
 
 `CONFIG_DIR` sets the config directory (default `./config`, `/config` in the image).
 
@@ -29,6 +30,8 @@ src/plugins/server.ts  Registry of plugin definitions (server only)
 src/plugins/views.ts   Registry of views (browser)
 src/server/local-plugins.ts  PLUGINS_DIR compiler (esbuild, shims, guardrails, live rebuild)
 src/server/registry.ts Built-in plus local plugin lookup
+src/server/schema.ts   JSON Schema for dashboard.yaml and pages (one entry per widget type)
+src/cli/index.ts       The harebear-dashboard CLI, bundled by scripts/build-cli.mjs with dist/serve.mjs
 src/server/auth.ts, session.ts  Password and proxy sign in; src/start.ts guards every request
 src/client/local-views.tsx  Loads local plugin views (registered on the server, lazy in the browser)
 ```
